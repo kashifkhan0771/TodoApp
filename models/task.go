@@ -15,7 +15,7 @@ type Task struct {
 	Status  string                 `json:"status" structs:"status" bson:"status" db:"status"`
 }
 
-func (t *Task) Map() map[string]interface{}{
+func (t *Task) Map() map[string]interface{} {
 	return structs.Map(t)
 }
 

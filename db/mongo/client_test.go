@@ -11,10 +11,9 @@ import (
 	"github.com/kashifkhan0771/TodoApp/models"
 )
 
-
 func Test_client_AddTask(t *testing.T) {
 	_ = os.Setenv("DB_PORT", "27017")
-	_ = os.Setenv("DB_HOST", "localhost")
+	_ = os.Setenv("DB_HOST", "task-management-mongo-db")
 
 	t.Parallel()
 	type args struct {
@@ -27,28 +26,18 @@ func Test_client_AddTask(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name : "Success - add new task into db",
+			name: "Success - add new task into db",
 			args: args{task: &models.Task{
-				ID: "001",
 				Title: "Task 1",
 				Desc: map[string]interface{}{
-					"User": "Kashif Khan",
+					"User":   "Kashif Khan",
 					"Detail": "Drink Water Daily",
 				},
 				AddedOn: time.Now().UTC().Truncate(time.Minute),
-				TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-				Status: "InProcess",
+				TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+				Status:  "InProcess",
 			}},
 			wantErr: false,
-		},
-		{
-			name : "Failure - add new task into db",
-			args: args{task: &models.Task{
-				ID: "001",
-				Title: "Task 1",
-				Status: "InDraft",
-			}},
-			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -59,6 +48,7 @@ func Test_client_AddTask(t *testing.T) {
 			_, err := c.AddTask(tt.args.ctx, tt.args.task)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AddTask() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 		})
@@ -68,19 +58,18 @@ func Test_client_AddTask(t *testing.T) {
 func Test_client_DeleteTask(t *testing.T) {
 	t.Parallel()
 	_ = os.Setenv("DB_PORT", "27017")
-	_ = os.Setenv("DB_HOST", "localhost")
+	_ = os.Setenv("DB_HOST", "task-management-mongo-db")
 
 	c, _ := NewClient(db.Option{})
 	task := &models.Task{
-		ID: "002",
 		Title: "Task To Delete",
 		Desc: map[string]interface{}{
-			"User": "Anonymous",
+			"User":   "Anonymous",
 			"Detail": "Delete this task",
 		},
 		AddedOn: time.Now().UTC().Truncate(time.Minute),
-		TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-		Status: "ToDelete",
+		TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+		Status:  "ToDelete",
 	}
 	_, _ = c.AddTask(context.TODO(), task)
 	type args struct {
@@ -93,8 +82,8 @@ func Test_client_DeleteTask(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name : "Success - delete task from database",
-			args: args{id:task.ID},
+			name:    "Success - delete task from database",
+			args:    args{id: task.ID},
 			wantErr: false,
 		},
 	}
@@ -112,18 +101,17 @@ func Test_client_DeleteTask(t *testing.T) {
 func Test_client_GetTaskByID(t *testing.T) {
 	t.Parallel()
 	_ = os.Setenv("DB_PORT", "27017")
-	_ = os.Setenv("DB_HOST", "localhost")
+	_ = os.Setenv("DB_HOST", "task-management-mongo-db")
 	c, _ := NewClient(db.Option{})
 	task := &models.Task{
-		ID: "003",
 		Title: "New Task",
 		Desc: map[string]interface{}{
-			"User": "Shahzad Haider",
+			"User":   "Shahzad Haider",
 			"Detail": "Get This Task From Database",
 		},
 		AddedOn: time.Now().UTC().Truncate(time.Minute),
-		TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-		Status: "Pending",
+		TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+		Status:  "Pending",
 	}
 
 	taskID, _ := c.AddTask(context.TODO(), task)
@@ -139,9 +127,9 @@ func Test_client_GetTaskByID(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Success - get task from database",
-			args: args{id: taskID},
-			want: task,
+			name:    "Success - get task from database",
+			args:    args{id: taskID},
+			want:    task,
 			wantErr: false,
 		},
 	}
@@ -152,6 +140,7 @@ func Test_client_GetTaskByID(t *testing.T) {
 			got, err := c.GetTaskByID(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetTaskByID() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -164,21 +153,20 @@ func Test_client_GetTaskByID(t *testing.T) {
 func Test_client_UpdateTask(t *testing.T) {
 	t.Parallel()
 	_ = os.Setenv("DB_PORT", "27017")
-	_ = os.Setenv("DB_HOST", "localhost")
+	_ = os.Setenv("DB_HOST", "task-management-mongo-db")
 	c, _ := NewClient(db.Option{})
 	task := &models.Task{
-		ID: "004",
 		Title: "New Task",
 		Desc: map[string]interface{}{
-			"User": "Shahzad Haider",
+			"User":   "Shahzad Haider",
 			"Detail": "Update this task",
 		},
 		AddedOn: time.Now().UTC().Truncate(time.Minute),
-		TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-		Status: "Pending",
+		TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+		Status:  "Pending",
 	}
 
-	updateTaskID, _ := c.AddTask(context.TODO(),task)
+	updateTaskID, _ := c.AddTask(context.TODO(), task)
 	type args struct {
 		ctx  context.Context
 		task *models.Task
@@ -191,15 +179,15 @@ func Test_client_UpdateTask(t *testing.T) {
 		{
 			name: "Success - update task in database",
 			args: args{task: &models.Task{
-				ID: updateTaskID,
+				ID:    updateTaskID,
 				Title: "New Task Updated",
 				Desc: map[string]interface{}{
-					"User": "Shahzad Haider",
+					"User":   "Shahzad Haider",
 					"Detail": "Task Updated",
 				},
 				AddedOn: time.Now().UTC().Truncate(time.Minute),
-				TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-				Status: "Pending",
+				TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+				Status:  "Pending",
 			}},
 			wantErr: false,
 		},

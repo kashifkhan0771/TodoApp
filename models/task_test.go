@@ -22,29 +22,28 @@ func TestTask_Map(t1 *testing.T) {
 		want   map[string]interface{}
 	}{
 		{
-			name : "success - Convert struct to map",
+			name: "success - Convert struct to map",
 			fields: fields{
-				ID: "1",
+				ID:    "1",
 				Title: "Task 1",
 				Desc: map[string]interface{}{
-					"User": "Kashif Khan",
+					"User":   "Kashif Khan",
 					"Detail": "Complete New Microservice",
 				},
 				AddedOn: time.Now().UTC().Truncate(time.Minute),
-				TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-				Status: "Pending",
+				TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+				Status:  "Pending",
 			},
 			want: map[string]interface{}{
-				"id": "1",
+				"id":    "1",
 				"title": "Task 1",
 				"desc": map[string]interface{}{
-					"User": "Kashif Khan",
+					"User":   "Kashif Khan",
 					"Detail": "Complete New Microservice",
 				},
-				"added_on":time.Now().UTC().Truncate(time.Minute),
-				"todo_on": time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-				"status": "Pending",
-
+				"added_on": time.Now().UTC().Truncate(time.Minute),
+				"todo_on":  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+				"status":   "Pending",
 			},
 		},
 	}
@@ -83,17 +82,17 @@ func TestTask_Names(t1 *testing.T) {
 		want   []string
 	}{
 		{
-			name : "success - Names of task struct field",
+			name: "success - Names of task struct field",
 			fields: fields{
-				ID: "1",
+				ID:    "1",
 				Title: "Task 1",
 				Desc: map[string]interface{}{
-					"User": "Kashif Khan",
+					"User":   "Kashif Khan",
 					"Detail": "Complete New Microservice",
 				},
 				AddedOn: time.Now().UTC().Truncate(time.Minute),
-				TodoOn: time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
-				Status: "Pending",
+				TodoOn:  time.Date(2021, 02, 15, 12, 00, 00, 00, time.UTC),
+				Status:  "Pending",
 			},
 			want: []string{"id", "title", "desc", "added_on", "todo_on", "status"},
 		},
