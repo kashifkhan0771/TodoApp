@@ -17,11 +17,11 @@ import (
 	"github.com/kashifkhan0771/TodoApp/models"
 )
 
-const(
+const (
 	taskCollection = "tasks"
 )
 
-func init(){
+func init() {
 	db.Register("mongo", NewClient)
 }
 
@@ -31,8 +31,8 @@ type client struct {
 
 // NewClient initializes a mongo database connection
 func NewClient(conf db.Option) (db.DataStore, error) {
-	uri := fmt.Sprintf("mongodb://%s/?connect=direct", viper.GetString(config.DBHost))
-	log().Infof("initializing mongodb: %s", viper.GetString(config.DBHost))
+	uri := fmt.Sprintf("mongodb://%s:%s/?connect=direct", viper.GetString(config.DBHost), viper.GetString(config.DBPort))
+	log().Infof("initializing mongodb: %s", uri)
 	cli, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to connect to db")
@@ -41,8 +41,8 @@ func NewClient(conf db.Option) (db.DataStore, error) {
 	return &client{conn: cli}, nil
 }
 
-func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error){
-	if task.ID == ""{
+func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error) {
+	if task.ID == "" {
 		task.ID = uuid.NewV4().String()
 	}
 
@@ -54,7 +54,7 @@ func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error)
 	return task.ID, nil
 }
 
-func (c *client) DeleteTask(ctx context.Context, id string) error{
+func (c *client) DeleteTask(ctx context.Context, id string) error {
 	collection := c.conn.Database(viper.GetString(config.DBName)).Collection(taskCollection)
 	if _, err := collection.DeleteOne(ctx, bson.M{"_id": id}); err != nil {
 		return errors.Wrap(err, "failed to delete task")
@@ -63,8 +63,8 @@ func (c *client) DeleteTask(ctx context.Context, id string) error{
 	return nil
 }
 
-func (c *client) GetTaskByID(ctx context.Context, id string) (*models.Task, error){
-	var task  *models.Task
+func (c *client) GetTaskByID(ctx context.Context, id string) (*models.Task, error) {
+	var task *models.Task
 	collection := c.conn.Database(viper.GetString(config.DBName)).Collection(taskCollection)
 	if err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&task); err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -75,8 +75,7 @@ func (c *client) GetTaskByID(ctx context.Context, id string) (*models.Task, erro
 	return task, nil
 }
 
-
-func (c *client) UpdateTask(ctx context.Context, task *models.Task) error{
+func (c *client) UpdateTask(ctx context.Context, task *models.Task) error {
 	collection := c.conn.Database(viper.GetString(config.DBName)).Collection(taskCollection)
 	if _, err := collection.UpdateOne(ctx, bson.M{"_id": task.ID}, bson.M{"$set": task}); err != nil {
 		return errors.Wrap(err, "failed to update host")
